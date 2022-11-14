@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=devive-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Mini Blog</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="fontawesome/css/all.css">
+</head>
+
+<body onload="init()">
+    <div class="d-flex flex-column align-items-center p-3 bg-white border-bottom box-shadow fixed-top">
+        <img src="images/mini-blog-logo.png" height="40" />
+
+        <nav>
+            <a id="getLatest" class="p-2 text-dark" href="#">Latest</a>
+            <a id="getAll" class="p-2 text-dark active" href="#">All</a>
+            <a id="getPopular" class="p-2 text-dark" href="#">Popular</a>
+        </nav>
+    </div>
+
+    <div class="blog-header mx-auto text-center">
+        <h1>Is it Beautiful?</h1>
+        <p class="lead">All the latest <strong><em>Tech</em></strong>, <strong><em>Design</em></strong>
+            and <strong><em>Development</em></strong> news from around the world.</p>
+    </div>
+
+    <div class="container team">
+        <img src="images/thandi.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/john.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/sally.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/lungi.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/bob.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/dave.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/jane.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/andile.jpg" class="img-thumbnail rounded-circle" width="90" />
+        <img src="images/lee.jpg" class="img-thumbnail rounded-circle" width="90" />
+    </div>
+
+    <div class="row container mx-auto">
+        <div class="column" id="posts">
+            Loading content...
+        </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        var rootPath;
+
+        function init() {
+            rootPath = "https://mysite.itvarsity.org/api/mini-blog/";
+
+            document.getElementById("getAll").addEventListener('click', getAllPosts);
+            document.getElementById("getLatest").addEventListener('click', getLatestPosts);
+            document.getElementById("getPopular").addEventListener('click', getPopularPosts);
+
+            getAllPosts();
+        }
+
+        function getAllPosts() {
+            category = "getAll"
+            fetchPosts(category);
+            setActiveLink(category);
+        }
+
+        function getLatestPosts() {
+            category = "getLatest"
+            fetchPosts(category);
+            setActiveLink(category);
+        }
+
+        function getPopularPosts() {
+            category = "getPopular"
+            fetchPosts(category);
+            setActiveLink(category);
+        }
+
+        function fetchPosts(category) {
+            fetch(rootPath + 'get-posts/?category=' + category)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    displayPosts(data);
+                })
+        }
+
+        function displayPosts(data) {
+            var output = "";
+
+            for (a = 0; a < data.length; a++) {
+                output += `
+                    <div class="card mb-4 shadow-box">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">${data[a][0]}</h4>
+                        </div>
+                        <div class="card-body">
+                            <img src="${rootPath}/uploads/${data[a][3]}" class="card-img-top" />
+                            <p class="card-text">${data[a][1]}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-lg btn-link"><i class="far fa-heart"></i></button>
+                                    <button type="button" class="btn btn-lg btn-link"><i class="far fa-comment"></i></button>
+                                    <button type="button" class="btn btn-lg btn-link"><i class="fa fa-retweet"></i></button>
+                                </div>
+                                <small class="text-muted">${data[a][2]}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById("posts").innerHTML = output;
+        }
+
+        function setActiveLink(id){
+            document.getElementById("getAll").classList.remove("active");
+            document.getElementById("getLatest").classList.remove("active");
+            document.getElementById("getPopular").classList.remove("active");
+
+            document.getElementById(id).classList.add("active");
+        }
+    </script>
+</body>
+
+</html>
